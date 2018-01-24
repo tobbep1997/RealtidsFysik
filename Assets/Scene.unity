@@ -108,52 +108,52 @@ NavMeshSettings:
     tileSize: 256
     accuratePlacement: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &804320415
+--- !u!1 &732181094
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   serializedVersion: 5
   m_Component:
-  - component: {fileID: 804320420}
-  - component: {fileID: 804320419}
-  - component: {fileID: 804320418}
-  - component: {fileID: 804320417}
-  - component: {fileID: 804320416}
+  - component: {fileID: 732181099}
+  - component: {fileID: 732181098}
+  - component: {fileID: 732181097}
+  - component: {fileID: 732181096}
+  - component: {fileID: 732181095}
   m_Layer: 0
-  m_Name: Main Camera
-  m_TagString: MainCamera
+  m_Name: Camera
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!81 &804320416
+--- !u!81 &732181095
 AudioListener:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 804320415}
+  m_GameObject: {fileID: 732181094}
   m_Enabled: 1
---- !u!124 &804320417
+--- !u!92 &732181096
 Behaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 804320415}
+  m_GameObject: {fileID: 732181094}
   m_Enabled: 1
---- !u!92 &804320418
+--- !u!124 &732181097
 Behaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 804320415}
+  m_GameObject: {fileID: 732181094}
   m_Enabled: 1
---- !u!20 &804320419
+--- !u!20 &732181098
 Camera:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 804320415}
+  m_GameObject: {fileID: 732181094}
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 1
@@ -166,10 +166,10 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 60
+  field of view: 22.885788
   orthographic: 1
-  orthographic size: 5
-  m_Depth: -1
+  orthographic size: 23.097982
+  m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -184,18 +184,18 @@ Camera:
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
   m_StereoMirrorMode: 0
---- !u!4 &804320420
+--- !u!4 &732181099
 Transform:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 804320415}
+  m_GameObject: {fileID: 732181094}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalPosition: {x: -7.37, y: -4.04, z: -27.16}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1768222361
 GameObject:
@@ -208,6 +208,7 @@ GameObject:
   - component: {fileID: 1768222364}
   - component: {fileID: 1768222363}
   - component: {fileID: 1768222362}
+  - component: {fileID: 1768222366}
   m_Layer: 0
   m_Name: Quad
   m_TagString: Untagged
@@ -275,12 +276,32 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1768222361}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -45.5, y: -25.1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1768222366
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1768222361}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0394f096b7e407a4a87acbf8fa18d0c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mass: 10000
+  f_gravity: 9.82
+  StartAngle: {x: 56.23, y: 1.72}
+  acceleration: {x: 0, y: 0}
+  velocity: {x: 1, y: 1}
+  debug: 1
+  arch: 1
+  rayDuration: 0.5
+  pointIteration: 0.5
 --- !u!1 &2068117106
 GameObject:
   m_ObjectHideFlags: 0
@@ -344,5 +365,5 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
