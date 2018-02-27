@@ -3,21 +3,35 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Physics2D : MonoBehaviour {
-    [SerializeField]
-    private float mass = 1000;
-    [SerializeField]
-    private float f_gravity = 9.80665f;
+
 
     [SerializeField]
-    private Vector3 StartAngle;
+    public float mass = 1000;
     [SerializeField]
-    private Vector3 acceleration;
+    public float f_gravity = 9.80665f;
+
     [SerializeField]
-    private Vector3 velocity;
-    private Vector3 position;
+    public Vector3 StartAngle;
+    [SerializeField]
+    public Vector3 acceleration;
+    [SerializeField]
+    public Vector3 velocity;
+    public Vector3 position;
+
+    [SerializeField]
+    public Vector3 rotation, rotAcceleration;
+    
 
     [SerializeField]
     private float cD = 1.0f, density = 1.0f, area = 2.0f;
+    [SerializeField]
+    private float cM = 1.0f;
+
+    [SerializeField]
+    public float boncyness = 1.0f;
+
+    [SerializeField]
+    private bool staticObject = false;
 
     [SerializeField]
     private bool debug = true, arch;
@@ -38,31 +52,46 @@ public class Physics2D : MonoBehaviour {
 
     private void Update()
     {
-        if (debug)
+        if (debug && !staticObject)
             DrawForces();
     }
 
     // Update is called once per frame
     void FixedUpdate () {
+        if (staticObject)
+            return;
         this.position = transform.position;
-        Gravity(ref acceleration);
-        AirResistance(ref velocity);
 
-        velocity += acceleration * this.mass;
+        Gravity(ref acceleration);
+        AirResistance();        
+        acceleration += ViktorEffekten(rotation);
+
+        velocity += acceleration;
         position += velocity * Time.deltaTime;
-        
+
+        //rotation += rotAcceleration;
+
+        transform.rotation = Quaternion.Euler(rotation);
+       
+
         transform.position = this.position;
 	} 
 
     void Gravity(ref Vector3 acceleration)
     {
-        acceleration += Vector3.down * (this.f_gravity * Mathf.Pow(Time.deltaTime, 2))/2;        
+        acceleration += Vector3.down * (this.f_gravity * mass * Mathf.Pow(Time.deltaTime, 2))/2;        
     }
 
-    void AirResistance(ref Vector3 acceleration)
+    void AirResistance()
     {
-        velocity += (velocity.normalized * -1.0f) * 0.5f * cD * density * area * velocity.magnitude * Time.deltaTime;
-        
+        acceleration += (velocity.normalized * -1.0f) * ((cD * density * area * velocity.magnitude) / 2) * Time.deltaTime;
+    }
+
+    Vector3 ViktorEffekten(Vector3 rotation)
+    {
+        //print(((density * cM * area * velocity.magnitude) / 2) * Vector3.Cross(rotation, velocity) * Time.deltaTime);
+        return Vector3.zero;
+        //return ((density * cM * area * velocity.magnitude) / 2) * Vector3.Cross(rotation, velocity) * Time.deltaTime;
     }
 
     void DrawForces()
@@ -93,9 +122,16 @@ public class Physics2D : MonoBehaviour {
         }
     }
 
-    void OnTriggerEnter(Collider other)
+    void OnCollisionEnter(Collision other)
     {
+       
+        Physics2D physics2D = other.gameObject.GetComponent<Physics2D>();
 
-        print(other.gameObject);
+        physics2D.velocity.x += ((mass * (velocity.x - (velocity.x * boncyness)) + (physics2D.mass * physics2D.velocity.x)) / physics2D.mass) *
+                                (-other.contacts[0].normal.x * Mathf.Min(mass / physics2D.mass, 1));
+        physics2D.velocity.y += ((mass * (velocity.y - (velocity.y * boncyness)) + (physics2D.mass * physics2D.velocity.y)) / physics2D.mass) *
+                                (-other.contacts[0].normal.y * Mathf.Min(mass / physics2D.mass, 1));
+        physics2D.velocity.z += ((mass * (velocity.z - (velocity.z * boncyness)) + (physics2D.mass * physics2D.velocity.z)) / physics2D.mass) *
+                                (-other.contacts[0].normal.z * Mathf.Min(mass / physics2D.mass, 1));
     }
 }
