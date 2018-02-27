@@ -9,12 +9,15 @@ public class Physics2D : MonoBehaviour {
     private float f_gravity = 9.80665f;
 
     [SerializeField]
-    private Vector2 StartAngle;
+    private Vector3 StartAngle;
     [SerializeField]
-    private Vector2 acceleration;
+    private Vector3 acceleration;
     [SerializeField]
-    private Vector2 velocity;
-    private Vector2 position;
+    private Vector3 velocity;
+    private Vector3 position;
+
+    [SerializeField]
+    private float cD = 1.0f, density = 1.0f, area = 2.0f;
 
     [SerializeField]
     private bool debug = true, arch;
@@ -27,8 +30,8 @@ public class Physics2D : MonoBehaviour {
 
 	void Start () {
         position = transform.position;
-
         velocity = StartAngle;
+
         timer = pointIteration;
         points = new List<Vector2>();
 	}
@@ -42,16 +45,23 @@ public class Physics2D : MonoBehaviour {
     // Update is called once per frame
     void FixedUpdate () {
         Gravity(ref acceleration);
+        AirResistance(ref velocity);
 
-        velocity += (acceleration * Mathf.Pow(Time.deltaTime, 2))/2;
+        velocity += acceleration * this.mass;
         position += velocity * Time.deltaTime;
         
-        transform.position = position;
+        transform.position = this.position;
 	} 
 
-    void Gravity(ref Vector2 acceleration)
+    void Gravity(ref Vector3 acceleration)
     {
-        acceleration += Vector2.down * (this.f_gravity * this.mass * Mathf.Pow(Time.deltaTime, 2))/2;
+        acceleration += Vector3.down * (this.f_gravity * Mathf.Pow(Time.deltaTime, 2))/2;        
+    }
+
+    void AirResistance(ref Vector3 velocity)
+    {
+        velocity += (velocity.normalized * -1.0f) * 0.5f * cD * density * area * velocity.magnitude * Time.deltaTime;
+        
     }
 
     void DrawForces()

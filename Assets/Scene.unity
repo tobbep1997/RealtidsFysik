@@ -293,15 +293,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0394f096b7e407a4a87acbf8fa18d0c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mass: 10000
+  mass: 10
   f_gravity: 9.82
-  StartAngle: {x: 56.23, y: 1.72}
+  StartAngle: {x: 139.18, y: 94.56}
   acceleration: {x: 0, y: 0}
   velocity: {x: 1, y: 1}
+  cD: 0.47
+  density: 1.224
+  area: 1
   debug: 1
   arch: 1
-  rayDuration: 0.5
-  pointIteration: 0.5
+  rayDuration: 10
+  pointIteration: 0
 --- !u!1 &2068117106
 GameObject:
   m_ObjectHideFlags: 0
