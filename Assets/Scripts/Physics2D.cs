@@ -44,6 +44,7 @@ public class Physics2D : MonoBehaviour {
 
     // Update is called once per frame
     void FixedUpdate () {
+        this.position = transform.position;
         Gravity(ref acceleration);
         AirResistance(ref velocity);
 
@@ -58,7 +59,7 @@ public class Physics2D : MonoBehaviour {
         acceleration += Vector3.down * (this.f_gravity * Mathf.Pow(Time.deltaTime, 2))/2;        
     }
 
-    void AirResistance(ref Vector3 velocity)
+    void AirResistance(ref Vector3 acceleration)
     {
         velocity += (velocity.normalized * -1.0f) * 0.5f * cD * density * area * velocity.magnitude * Time.deltaTime;
         
@@ -83,12 +84,18 @@ public class Physics2D : MonoBehaviour {
             if (timer >= pointIteration)
             {
                 timer = 0;
-                points.Add(position);
+                points.Add(transform.position);
             }
             for (int i = 0; i < points.Count - 1; i++)
             {
                 Debug.DrawLine(points[i], points[i + 1], Color.blue);
             }
         }
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+
+        print(other.gameObject);
     }
 }
