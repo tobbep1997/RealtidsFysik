@@ -84,7 +84,7 @@ public class Physics2D : MonoBehaviour {
 
     void AirResistance()
     {
-        acceleration += (velocity.normalized * -1.0f) * ((cD * density * area * velocity.magnitude) / 2) * Time.deltaTime;
+        velocity += (velocity.normalized * -1.0f) * ((cD * density * area * velocity.magnitude) / 2) * Time.deltaTime;
     }
 
     Vector3 ViktorEffekten(Vector3 rotation)
