@@ -13,8 +13,8 @@ public class Physics2D : MonoBehaviour {
     [SerializeField]
     public Vector3 StartAngle;
     [SerializeField]
+    public Vector3 force;
     public Vector3 acceleration;
-    [SerializeField]
     public Vector3 velocity;
     public Vector3 position;
 
@@ -40,14 +40,14 @@ public class Physics2D : MonoBehaviour {
     private float rayDuration = 1.0f, pointIteration = 1.0f;
 
     private float timer;
-    private List<Vector2> points;
+    private List<Vector3> points;
 
 	void Start () {
         position = transform.position;
         velocity = StartAngle;
 
         timer = pointIteration;
-        points = new List<Vector2>();
+        points = new List<Vector3>();
 	}
 
     private void Update()
@@ -60,18 +60,20 @@ public class Physics2D : MonoBehaviour {
     void FixedUpdate () {
         if (staticObject)
             return;
-        this.position = transform.position;
+        force = Vector3.zero;
 
-        Gravity(ref acceleration);
-        AirResistance();        
-        acceleration += ViktorEffekten(rotation);
+        Gravity();
+        AirResistance();
+        ViktorEffekten();
+        applyRot();
 
+        acceleration = force / mass;
         velocity += acceleration;
-        position += velocity * Time.deltaTime;
+        position += velocity;
 
-        rotation += rotAcceleration;
+        
 
-        transform.rotation = Quaternion.Euler(rotation);
+        Debug.DrawRay(position, force, Color.yellow);
        
 
         transform.position = this.position;
@@ -79,24 +81,41 @@ public class Physics2D : MonoBehaviour {
 
     void applyRot()
     {
+        rotation += rotAcceleration * Time.deltaTime;
 
+        if (rotation.x > Mathf.PI * 2)
+            rotation.x -= Mathf.PI * 2;
+        if (rotation.y > Mathf.PI * 2)
+            rotation.y -= Mathf.PI * 2;
+        if (rotation.z > Mathf.PI * 2)
+            rotation.z -= Mathf.PI * 2;
+
+        if (rotation.x < 0)
+            rotation.x += Mathf.PI * 2;
+        if (rotation.y < 0)
+            rotation.y += Mathf.PI * 2;
+        if (rotation.z < 0)
+            rotation.z += Mathf.PI * 2;
+
+        transform.rotation = Quaternion.Euler(rotation * Mathf.Rad2Deg);
     }
 
-    void Gravity(ref Vector3 acceleration)
+    void Gravity()
     {
-        acceleration += Vector3.down * (this.f_gravity * mass * Mathf.Pow(Time.deltaTime, 2))/2;        
+        force += Vector3.down * (this.f_gravity * mass * Time.deltaTime * Time.deltaTime)/2;        
     }
 
     void AirResistance()
     {
-        velocity += (velocity.normalized * -1.0f) * ((cD * density * area * velocity.magnitude) / 2) * Time.deltaTime;
+        force.x -= ((cD * density * area * velocity.x) / 2) * Time.deltaTime;
+        force.y -= ((cD * density * area * velocity.y) / 2) * Time.deltaTime;
+        force.z -= ((cD * density * area * velocity.z) / 2) * Time.deltaTime;
     }
 
-    Vector3 ViktorEffekten(Vector3 rotation)
+    void ViktorEffekten()
     {
-        //print(((density * cM * area * velocity.magnitude) / 2) * Vector3.Cross(rotation, velocity) * Time.deltaTime);
-        return Vector3.zero;
-        //return (((density * cM * area * velocity.magnitude) / 2) * Vector3.Cross(rotation, velocity) * Time.deltaTime)/mass;
+        Debug.DrawRay(position, (((cM * density * area * velocity.magnitude) / 2) * Vector3.Cross(rotation, force)), Color.magenta);
+        force += (((cM * density * area * velocity.magnitude) / 2) * Vector3.Cross(rotation, velocity.normalized)) * Time.deltaTime;        
     }
 
     void DrawForces()
@@ -118,7 +137,7 @@ public class Physics2D : MonoBehaviour {
             if (timer >= pointIteration)
             {
                 timer = 0;
-                points.Add(transform.position);
+                points.Add(position);
             }
             for (int i = 0; i < points.Count - 1; i++)
             {
