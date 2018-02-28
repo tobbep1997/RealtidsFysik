@@ -52,8 +52,8 @@ public class Physics2D : MonoBehaviour {
 	void Start () {
         position = transform.position;
         velocity = StartAngle;
-
         timer = pointIteration;
+
         points = new List<Vector3>();
 	}
 
@@ -62,33 +62,36 @@ public class Physics2D : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.Space))
             pause = !pause;
     }
-
-    // Update is called once per frame
+    
     void FixedUpdate () {
         if (debug && !staticObject)
             DrawForces();
-
         if (staticObject || pause)
             return;
-
-        force = Vector3.zero;
+        
+        force = Vector3.zero;   //Reset to recalculate the forces.
 
         Gravity();
         AirResistance();
         ViktorEffekten();
-        applyRot();
+        ApplyRot();
+        Translation();
+	} 
 
+    void Translation()
+    {
         acceleration = force / mass;
         velocity += acceleration;
         position += velocity;
-
+        
         transform.position = this.position;
-	} 
+    }
 
-    void applyRot()
+    void ApplyRot()
     {
-        rotation += rotAcceleration * Time.deltaTime;
-
+        rotation += rotAcceleration * Time.deltaTime; // Applies the rotation in rads
+        //There is proabebly a nice and clean way to do this
+        //But this works to :D
         if (rotation.x > Mathf.PI * 2)
             rotation.x -= Mathf.PI * 2;
         if (rotation.y > Mathf.PI * 2)
@@ -108,11 +111,13 @@ public class Physics2D : MonoBehaviour {
 
     void Gravity()
     {
+        //Adds gravity to the force
         force += Vector3.down * (this.f_gravity * mass * Time.deltaTime * Time.deltaTime)/2;        
     }
 
     void AirResistance()
     {
+        //Adds air resistance to the force in the opposit direction of the object
         force.x -= ((cD * density * area * velocity.x) / 2) * Time.deltaTime;
         force.y -= ((cD * density * area * velocity.y) / 2) * Time.deltaTime;
         force.z -= ((cD * density * area * velocity.z) / 2) * Time.deltaTime;
@@ -120,11 +125,14 @@ public class Physics2D : MonoBehaviour {
 
     void ViktorEffekten()
     {        
+        //mangnus effekten.
         force += (((cM * density * area * velocity.magnitude) / 2) * Vector3.Cross(rotation, velocity.normalized)) * Time.deltaTime;        
     }
 
     void DrawForces()
     {
+        //Draws all the relevant forces for debugging purposes
+
         timer += Time.deltaTime;
         if (rayDuration <= 0)
         {
@@ -157,7 +165,7 @@ public class Physics2D : MonoBehaviour {
     {
        
         Physics2D physics2D = other.gameObject.GetComponent<Physics2D>();
-        
+        //Calculates and applys the force of the impact
         physics2D.velocity.x += ((mass * (velocity.x - (velocity.x * boncyness)) + (physics2D.mass * physics2D.velocity.x)) / physics2D.mass) *
                                 (-other.contacts[0].normal.x * Mathf.Min(mass / physics2D.mass, 1));
         physics2D.velocity.y += ((mass * (velocity.y - (velocity.y * boncyness)) + (physics2D.mass * physics2D.velocity.y)) / physics2D.mass) *
@@ -165,12 +173,10 @@ public class Physics2D : MonoBehaviour {
         physics2D.velocity.z += ((mass * (velocity.z - (velocity.z * boncyness)) + (physics2D.mass * physics2D.velocity.z)) / physics2D.mass) *
                                 (-other.contacts[0].normal.z * Mathf.Min(mass / physics2D.mass, 1));
 
+        //Calculates the rotation and applys it
         Vector3 centerToCol = other.contacts[0].point - other.transform.position;
         Vector3 v = Vector3.Scale(velocity, other.contacts[0].normal);
 
-        physics2D.rotAcceleration += Vector3.Cross(v, centerToCol) / physics2D.mass;
-
-        print(other.gameObject);
-        
+        physics2D.rotAcceleration += Vector3.Cross(v, centerToCol) / physics2D.mass;        
     }
 }
