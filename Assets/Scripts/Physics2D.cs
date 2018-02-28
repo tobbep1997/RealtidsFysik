@@ -69,13 +69,18 @@ public class Physics2D : MonoBehaviour {
         velocity += acceleration;
         position += velocity * Time.deltaTime;
 
-        //rotation += rotAcceleration;
+        rotation += rotAcceleration;
 
         transform.rotation = Quaternion.Euler(rotation);
        
 
         transform.position = this.position;
 	} 
+
+    void applyRot()
+    {
+
+    }
 
     void Gravity(ref Vector3 acceleration)
     {
@@ -91,7 +96,7 @@ public class Physics2D : MonoBehaviour {
     {
         //print(((density * cM * area * velocity.magnitude) / 2) * Vector3.Cross(rotation, velocity) * Time.deltaTime);
         return Vector3.zero;
-        //return ((density * cM * area * velocity.magnitude) / 2) * Vector3.Cross(rotation, velocity) * Time.deltaTime;
+        //return (((density * cM * area * velocity.magnitude) / 2) * Vector3.Cross(rotation, velocity) * Time.deltaTime)/mass;
     }
 
     void DrawForces()
@@ -133,5 +138,6 @@ public class Physics2D : MonoBehaviour {
                                 (-other.contacts[0].normal.y * Mathf.Min(mass / physics2D.mass, 1));
         physics2D.velocity.z += ((mass * (velocity.z - (velocity.z * boncyness)) + (physics2D.mass * physics2D.velocity.z)) / physics2D.mass) *
                                 (-other.contacts[0].normal.z * Mathf.Min(mass / physics2D.mass, 1));
+        
     }
 }
