@@ -36,11 +36,18 @@ public class Physics2D : MonoBehaviour {
     [SerializeField]
     private bool debug = true, arch;
     [SerializeField]
-    [Range(0, 10.0f)]
-    private float rayDuration = 1.0f, pointIteration = 1.0f;
+    private float rayDuration = 1.0f;
+    [SerializeField]
+    [Range(0.0f, 1.0f)]
+    private float pointIteration = 1.0f;
 
     private float timer;
-    private List<Vector3> points;
+    private List<Vector3> points;    
+
+    [SerializeField]
+    bool pause = true;
+
+    bool collision = false;
 
 	void Start () {
         position = transform.position;
@@ -52,14 +59,18 @@ public class Physics2D : MonoBehaviour {
 
     private void Update()
     {
-        if (debug && !staticObject)
-            DrawForces();
+        if (Input.GetKeyDown(KeyCode.Space))
+            pause = !pause;
     }
 
     // Update is called once per frame
     void FixedUpdate () {
-        if (staticObject)
+        if (debug && !staticObject)
+            DrawForces();
+
+        if (staticObject || pause)
             return;
+
         force = Vector3.zero;
 
         Gravity();
@@ -70,11 +81,6 @@ public class Physics2D : MonoBehaviour {
         acceleration = force / mass;
         velocity += acceleration;
         position += velocity;
-
-        
-
-        Debug.DrawRay(position, force, Color.yellow);
-       
 
         transform.position = this.position;
 	} 
@@ -113,8 +119,7 @@ public class Physics2D : MonoBehaviour {
     }
 
     void ViktorEffekten()
-    {
-        Debug.DrawRay(position, (((cM * density * area * velocity.magnitude) / 2) * Vector3.Cross(rotation, force)), Color.magenta);
+    {        
         force += (((cM * density * area * velocity.magnitude) / 2) * Vector3.Cross(rotation, velocity.normalized)) * Time.deltaTime;        
     }
 
@@ -125,11 +130,13 @@ public class Physics2D : MonoBehaviour {
         {
             Debug.DrawRay(position, velocity, Color.green);
             Debug.DrawRay(position, acceleration, Color.red);
+            Debug.DrawRay(position, force, Color.yellow);
         }
         else
         {
             Debug.DrawRay(position, velocity, Color.green, rayDuration);
             Debug.DrawRay(position, acceleration, Color.red, rayDuration);
+            Debug.DrawRay(position, force, Color.yellow, rayDuration);
         }
 
         if (arch)
@@ -150,13 +157,20 @@ public class Physics2D : MonoBehaviour {
     {
        
         Physics2D physics2D = other.gameObject.GetComponent<Physics2D>();
-
+        
         physics2D.velocity.x += ((mass * (velocity.x - (velocity.x * boncyness)) + (physics2D.mass * physics2D.velocity.x)) / physics2D.mass) *
                                 (-other.contacts[0].normal.x * Mathf.Min(mass / physics2D.mass, 1));
         physics2D.velocity.y += ((mass * (velocity.y - (velocity.y * boncyness)) + (physics2D.mass * physics2D.velocity.y)) / physics2D.mass) *
                                 (-other.contacts[0].normal.y * Mathf.Min(mass / physics2D.mass, 1));
         physics2D.velocity.z += ((mass * (velocity.z - (velocity.z * boncyness)) + (physics2D.mass * physics2D.velocity.z)) / physics2D.mass) *
                                 (-other.contacts[0].normal.z * Mathf.Min(mass / physics2D.mass, 1));
+
+        Vector3 centerToCol = other.contacts[0].point - other.transform.position;
+        Vector3 v = Vector3.Scale(velocity, other.contacts[0].normal);
+
+        physics2D.rotAcceleration += Vector3.Cross(v, centerToCol) / physics2D.mass;
+
+        print(other.gameObject);
         
     }
 }
