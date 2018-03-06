@@ -49,10 +49,15 @@ public class Physics2D : MonoBehaviour {
 
     bool collision = false;
 
+    public float executionTime = 0;
+
 	void Start () {
         position = transform.position;
         velocity = StartAngle;
         timer = pointIteration;
+
+        //print(Vector3.Angle(velocity, Vector3.right));
+        //print(velocity.sqrMagnitude);
 
         points = new List<Vector3>();
 	}
@@ -62,16 +67,20 @@ public class Physics2D : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.Space))
             pause = !pause;
     }
-    
+
+
     void FixedUpdate () {
         if (debug && !staticObject)
             DrawForces();
         if (staticObject || pause)
             return;
+
         
+
+        executionTime += Time.deltaTime;
+
         force = Vector3.zero;   //Reset to recalculate the forces.
 
-        Gravity();
         AirResistance();
         ViktorEffekten();
         ApplyRot();
@@ -81,7 +90,8 @@ public class Physics2D : MonoBehaviour {
     void Translation()
     {
         acceleration = force / mass;
-        velocity += acceleration;
+        Gravity();
+        velocity += acceleration * Time.deltaTime;       
         position += velocity;
         
         transform.position = this.position;
@@ -112,21 +122,21 @@ public class Physics2D : MonoBehaviour {
     void Gravity()
     {
         //Adds gravity to the force
-        force += Vector3.down * (this.f_gravity * mass * Time.deltaTime * Time.deltaTime)/2;        
+        acceleration += Vector3.down * (this.f_gravity) * Time.deltaTime;        
     }
 
     void AirResistance()
     {
         //Adds air resistance to the force in the opposit direction of the object
-        force.x -= ((cD * density * area * velocity.x) / 2) * Time.deltaTime;
-        force.y -= ((cD * density * area * velocity.y) / 2) * Time.deltaTime;
-        force.z -= ((cD * density * area * velocity.z) / 2) * Time.deltaTime;
+        force.x -= ((cD * density * area * velocity.x) / 2);
+        force.y -= ((cD * density * area * velocity.y) / 2);
+        force.z -= ((cD * density * area * velocity.z) / 2);
     }
 
     void ViktorEffekten()
     {        
         //mangnus effekten.
-        force += (((cM * density * area * velocity.magnitude) / 2) * Vector3.Cross(rotation, velocity.normalized)) * Time.deltaTime;        
+        force += (((cM * density * area * velocity.magnitude) / 2) * Vector3.Cross(rotation, velocity.normalized));        
     }
 
     void DrawForces()
