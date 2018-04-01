@@ -393,7 +393,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &440993732
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -637,7 +637,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mass: 100
   f_gravity: 98.0665
-  StartAngle: {x: 1, y: 1, z: 0}
+  StartAngle: {x: 1, y: 10, z: 0}
   force: {x: 0, y: 0, z: 0}
   acceleration: {x: 0, y: 0, z: 0}
   velocity: {x: 1, y: 1, z: 0}
@@ -716,7 +716,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 541194425}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -32.7, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 2.8668818, y: 2.866882, z: 2.866882}
   m_Children: []
   m_Father: {fileID: 0}
@@ -755,9 +755,9 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 541194425}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 64a7c8fed10286c4185dc2d28bf28a5b, type: 3}
+  m_Script: {fileID: 11500000, guid: 582aa095cddcc434ab5ac4a9fa702579, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &732181094

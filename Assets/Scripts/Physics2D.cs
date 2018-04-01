@@ -56,8 +56,8 @@ public class Physics2D : MonoBehaviour {
         velocity = StartAngle;
         timer = pointIteration;
 
-        //print(Vector3.Angle(velocity, Vector3.right));
-        //print(velocity.sqrMagnitude);
+        print(Vector3.Angle(velocity, Vector3.right));
+        print(velocity.sqrMagnitude);
 
         points = new List<Vector3>();
 	}
@@ -91,8 +91,8 @@ public class Physics2D : MonoBehaviour {
     {
         acceleration = force / mass;
         Gravity();
-        velocity += acceleration * Time.deltaTime;       
-        position += velocity;
+        velocity += acceleration * Time.deltaTime;
+        position += velocity * Time.deltaTime;
         
         transform.position = this.position;
     }
